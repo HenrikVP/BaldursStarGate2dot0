@@ -8,28 +8,30 @@ namespace BaldursStarGate2dot0
     {
         static string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-        public static void SaveGame(Player player)
+        public static void Save<T>(T obj)
         {
-            string json = JsonSerializer.Serialize(player);
+            string json = JsonSerializer.Serialize(obj);
             //TODO Try catch
-            using (StreamWriter file = new StreamWriter(Path.Combine(path, "savegame.json")))
+            using (StreamWriter writer = new(Path.Combine(path, $"{obj.GetType()}.json")))
             {
-                file.WriteLine(json);
+                writer.WriteLine(json);
             };
         }
-        public static Player? LoadGame()
+
+        public static T? Load<T>()
         {
+            string file = Path.Combine(path, $"{typeof(T)}.json");
             //Prevention before exception
-            if (!File.Exists(Path.Combine(path, "savegame.json"))) return null;
+            if (!File.Exists(file)) return default(T);
             
             //TODO Trycatch
             string json;
-            using (StreamReader file = new StreamReader(Path.Combine(path, "savegame.json")))
+            using (StreamReader reader = new StreamReader(file))
             {
-                json = file.ReadToEnd();
+                json = reader.ReadToEnd();
             };
-            Player? player = JsonSerializer.Deserialize<Player>(json);
-            return player;
+            T? obj = JsonSerializer.Deserialize<T>(json);
+            return obj;
         }
 
         //Just an example of doing the XML way instead of JSON
@@ -38,16 +40,16 @@ namespace BaldursStarGate2dot0
             TextWriter writer = new StreamWriter(Path.Combine(path, "savegame.json"));
             new XmlSerializer(typeof(Player)).Serialize(writer, player);
         }
-        //public static Player? LoadGame()
+        //public static Player? Load()
         //{
         //    //Prevention before exception
         //    if (!File.Exists(Path.Combine(path, "savegame.json"))) return null;
 
         //    //TODO Trycatch
         //    string json;
-        //    using (StreamReader file = new StreamReader(Path.Combine(path, "savegame.json")))
+        //    using (StreamReader reader = new StreamReader(Path.Combine(path, "savegame.json")))
         //    {
-        //        json = file.ReadToEnd();
+        //        json = reader.ReadToEnd();
         //    };
         //    Player? player = JsonSerializer.Deserialize<Player>(json);
         //    return player;

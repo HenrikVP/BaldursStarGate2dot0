@@ -59,7 +59,7 @@
                     return false;
                 case ConsoleKey.NumPad5:
                 case ConsoleKey.D5:
-                    Io.SaveGame(player);
+                    Io.Save(player);
                     break;
                 default:
                     break;

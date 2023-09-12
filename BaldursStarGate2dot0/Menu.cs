@@ -23,8 +23,13 @@
                     break;
                 case ConsoleKey.NumPad2:
                 case ConsoleKey.D2:
-                    Player player = Io.LoadGame();
-                    new Game(player);
+                    Player? player = Io.Load<Player>();
+                    if (player == null)
+                    {
+                        Gui.Print(7, 10, "Failed to load game!", ConsoleColor.Red);
+                        Console.ReadKey();
+                    }
+                    else new Game(player);
                     break;
                 case ConsoleKey.NumPad3:
                 case ConsoleKey.D3:
